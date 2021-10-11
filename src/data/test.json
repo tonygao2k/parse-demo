@@ -1,0 +1,166 @@
+{
+  "singleVal": "Only for Test",
+  "arrayVal":
+    [
+      {
+        "width": 12,
+        "height": 10
+      },
+      {
+        "width": 12,
+        "height": 10
+      }
+    ],
+  "jsonVal": {
+    "width": 12,
+    "height": 10
+  },
+
+  "UID_001": {
+    "name": "Tony",
+    "age": 24,
+    "CID_001": {
+      "AID_1": {
+        "session": "11111",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      },
+      "AID_2": {
+        "session": "22222",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      }
+    },
+    "CID_002": {
+      "AID_2": {
+        "session": "33333",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      },
+      "AID_3": {
+        "session": "44444",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      }
+    }
+  },
+
+  "UID_002": {
+    "name": "Leo",
+    "age": 12,
+    "CID_001": {
+      "AID_1": {
+        "session": "11111",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      },
+      "AID_2": {
+        "session": "22222",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      }
+    },
+    "CID_002": {
+      "AID_2": {
+        "session": "33333",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      },
+      "AID_3": {
+        "session": "44444",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      }
+    }
+  },
+
+  "UID_003": {
+    "name": "Jack",
+    "age": 14,
+    "CID_001": {
+      "AID_1": {
+        "session": "11111",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      },
+      "AID_2": {
+        "session": "22222",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      }
+    },
+    "CID_002": {
+      "AID_2": {
+        "session": "33333",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      },
+      "AID_3": {
+        "session": "44444",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      }
+    }
+  },
+
+  "UID_004": {
+    "name": "Tom",
+    "age": 24,
+    "CID_001": {
+      "AID_1": {
+        "session": "11111",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      },
+      "AID_2": {
+        "session": "22222",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      }
+    },
+    "CID_002": {
+      "AID_2": {
+        "session": "33333",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      },
+      "AID_3": {
+        "session": "44444",
+        "active": {
+          "audio": true,
+          "video": true
+        }
+      }
+    }
+  }
+}
