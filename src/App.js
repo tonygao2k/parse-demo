@@ -2,65 +2,80 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import Stack from '@material-ui/core/Stack';
 import Parse from 'parse/dist/parse.min.js';
-import data from './data/test.json';
 import './App.css';
 
 class App extends React.Component {
     constructor(props) {
         super(props);
 
-        this.demoDB = null;
-        this.query = null;
+        this.TestDB = null;
+        this.interval = null;
 
-        Parse.initialize("123456");
-        Parse.serverURL = 'http://192.168.1.102:8080/parse';
-        Parse.liveQueryServerURL = 'ws://192.168.1.102:18080';
-
-        let DemoDB = new Parse.Object.extend('Demo');
-        this.demoDB = new DemoDB();
-        this.query = new Parse.Query(DemoDB);
-        this.query.limit(10000);
-
-        this.saveObj = this.saveObj.bind(this);
+        this.startTest = this.startTest.bind(this);
+        this.stopTest = this.stopTest.bind(this);
+        this.deleteAll = this.deleteAll.bind(this);
         this.queryAll = this.queryAll.bind(this);
-        this.query_1 = this.query_1.bind(this);
     }
 
     componentDidMount() {
-
+        Parse.initialize("123456");
+        Parse.serverURL = 'http://192.168.1.102:8080/parse';
+        Parse.liveQueryServerURL = 'ws://192.168.1.102:18080';
+        this.TestDB = new Parse.Object.extend('Test');
     }
 
-    saveObj() {
-        this.demoDB.save(data)
-            .then(
-                (demoDB) => {
-                    console.log("Save Data Success!!!");
-                    this.demoDB = demoDB;
+    startTest() {
+        let doTest = (id)=> {
+            let testDB = new this.TestDB();
+
+            const data = {
+                uid: id,
+                name: 'usr_' + id,
+                age: id
+            }
+
+            testDB.save(data)
+                .then((obj) => {
+                    console.log(obj.id + " Save Data Success!!! ");
                 },
                 (err) => {
                     console.log(err);
-                }
-            );
+                });
+        }
+
+        let cnt = 0;
+        this.interval = setInterval(()=>{
+            doTest(++cnt);
+        }, 500);
+    }
+
+    stopTest() {
+        clearInterval(this.interval);
+        this.interval = null;
+    }
+
+    async deleteAll() {
+        let query = new Parse.Query(this.TestDB);
+        let objs = await query.find();
+
+        for (let i = 0; i < objs.length; i++) {
+            objs[i].destroy()
+                .then((obj) => {
+                    console.log("Delete Object " + obj.id + " Success!!!");
+                },
+                (err) => {
+                    console.log(err);
+                });
+        }
     }
 
     async queryAll() {
-        let obj = await this.query.find();
-        let res = obj[0].toJSON();
-        console.log(res);
-    }
+        let query = new Parse.Query(this.TestDB);
+        let objs = await query.find();
 
-    async query_1() {
-        this.query.equalTo();
-        const obj = await this.query.find();
-        let val1 = obj[0].get('singleVal');
-        let val2 = obj[0].get('arrayVal');
-        let val3 = obj[0].get('jsonVal');
-        let val4 = obj[0].get('UID_001');
-
-        console.log(val1);
-        console.log(val2);
-        console.log(val3);
-        console.log(val4);
+        for (let i = 0; i < objs.length; i++) {
+            console.log(objs[i].toJSON());
+        }
     }
 
     render() {
@@ -68,9 +83,10 @@ class App extends React.Component {
             <div className="App">
                 <header className="App-Container">
                     <Stack spacing={2} direction="row">
-                        <Button variant="contained" onClick={this.saveObj}>保存对象</Button>
+                        <Button variant="contained" onClick={this.startTest}>开始测试</Button>
+                        <Button variant="contained" onClick={this.stopTest}>结束测试</Button>
+                        <Button variant="contained" onClick={this.deleteAll}>清空测试数据</Button>
                         <Button variant="contained" onClick={this.queryAll}>获取全部数据</Button>
-                        <Button variant="contained" onClick={this.query_1}>查询1</Button>
                     </Stack>
                 </header>
             </div>
