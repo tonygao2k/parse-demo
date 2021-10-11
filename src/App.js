@@ -142,8 +142,10 @@ class App extends React.Component {
         let length = objs.length;
 
         for (let i = 0; i < length; i++) {
-            console.log(i + " " + objs[i].get('name'));
+            console.log(objs[i].toJSON());
         }
+
+        console.log("Total " + length + " objects founded");
     }
 
     async queryUsers() {
