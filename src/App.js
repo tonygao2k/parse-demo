@@ -22,7 +22,8 @@ class App extends React.Component {
         this.closeLiveQuery = this.closeLiveQuery.bind(this);
 
         this.state = {
-            liveQuery: false
+            liveQuery: false,
+            pressureTest: false
         }
     }
 
@@ -102,11 +103,19 @@ class App extends React.Component {
         this.interval = setInterval(()=>{
             doTest(++cnt);
         }, 500);
+
+        this.setState({
+            pressureTest: true
+        });
     }
 
     stopTest() {
         clearInterval(this.interval);
         this.interval = null;
+
+        this.setState({
+            pressureTest: false
+        });
     }
 
     async deleteAll() {
@@ -168,12 +177,18 @@ class App extends React.Component {
     }
 
     render() {
-        let btnLiveQuery;
+        let btnLiveQuery, btnPressureTest;
 
         if (this.state.liveQuery) {
-            btnLiveQuery = <Button variant="contained" onClick={this.closeLiveQuery}>关闭监听</Button>;
+            btnLiveQuery = <Button variant="contained" color="secondary" onClick={this.closeLiveQuery}>关闭监听</Button>;
         } else {
             btnLiveQuery = <Button variant="contained" onClick={this.openLiveQuery}>打开监听</Button>
+        }
+
+        if (this.state.pressureTest) {
+            btnPressureTest = <Button variant="contained" color="secondary" onClick={this.stopTest}>结束压力测试</Button>;
+        } else {
+            btnPressureTest = <Button variant="contained" onClick={this.startTest}>开始压力测试</Button>
         }
 
         return (
@@ -181,11 +196,10 @@ class App extends React.Component {
                 <header className="App-Container">
                     <Stack spacing={2} direction="row">
                         {btnLiveQuery}
-                        <Button variant="contained" onClick={this.queryAll}>获取全部数据</Button>
-                        <Button variant="contained" onClick={this.queryUsers}>获取查询数据</Button>
+                        {btnPressureTest}
+                        <Button variant="contained" onClick={this.queryAll}>查询全部</Button>
+                        <Button variant="contained" onClick={this.queryUsers}>条件查询</Button>
                         <Button variant="contained" onClick={this.modify}>修改数据</Button>
-                        <Button variant="contained" onClick={this.startTest}>开始压力测试</Button>
-                        <Button variant="contained" onClick={this.stopTest}>结束压力测试</Button>
                         <Button variant="contained" onClick={this.deleteAll}>清空测试数据</Button>
                     </Stack>
                 </header>
