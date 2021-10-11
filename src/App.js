@@ -10,6 +10,7 @@ class App extends React.Component {
 
         this.TestDB = null;
         this.interval = null;
+        this.subscription = null;
 
         this.startTest = this.startTest.bind(this);
         this.stopTest = this.stopTest.bind(this);
@@ -17,7 +18,12 @@ class App extends React.Component {
         this.modify = this.modify.bind(this);
         this.queryAll = this.queryAll.bind(this);
         this.queryUsers = this.queryUsers.bind(this);
-        this.liveQuery = this.liveQuery.bind(this);
+        this.openLiveQuery = this.openLiveQuery.bind(this);
+        this.closeLiveQuery = this.closeLiveQuery.bind(this);
+
+        this.state = {
+            liveQuery: false
+        }
     }
 
     async componentDidMount() {
@@ -25,62 +31,71 @@ class App extends React.Component {
         Parse.serverURL = 'http://192.168.1.102:8080/parse';
         Parse.liveQueryServerURL = 'ws://192.168.1.102:18080';
         this.TestDB = new Parse.Object.extend('Test');
+
+        this.openLiveQuery();
     }
 
-    async liveQuery() {
+    async openLiveQuery() {
         let query = new Parse.Query(this.TestDB);
-        let subscription = await query.subscribe();
+        this.subscription = await query.subscribe();
 
-        subscription.on('open', ()=>{
+        this.setState({
+            liveQuery: true
+        })
+
+        this.subscription.on('open', ()=>{
             console.log('socket connection established');
         });
 
-        subscription.on('close', ()=>{
+        this.subscription.on('close', ()=>{
             console.log('socket connection closed');
         });
 
-        subscription.on('error', (err)=>{
+        this.subscription.on('error', (err)=>{
             console.log(err);
         });
 
-        subscription.on('enter', (obj)=>{
+        this.subscription.on('enter', (obj)=>{
             console.log('object ' + obj.id + ' entered');
         });
 
-        subscription.on('leave', (obj)=>{
+        this.subscription.on('leave', (obj)=>{
             console.log('object ' + obj.id + ' left');
         });
 
-        subscription.on('create', (obj)=>{
+        this.subscription.on('create', (obj)=>{
             console.log('object ' + obj.id + ' created');
         });
 
-        subscription.on('update', (obj)=>{
+        this.subscription.on('update', (obj)=>{
             console.log('object ' + obj.id +  ' updated ');
         });
 
-        subscription.on('delete', (obj)=>{
+        this.subscription.on('delete', (obj)=>{
             console.log('object ' + obj.id + ' deleted ');
         });
+    }
+
+    closeLiveQuery() {
+        if (this.subscription !== null) {
+            this.subscription.unsubscribe();
+            this.subscription = null;
+
+            this.setState({
+                liveQuery: false
+            })
+        }
     }
 
     startTest() {
         let doTest = (id)=> {
             let testDB = new this.TestDB();
 
-            const data = {
+            testDB.save({
                 uid: id,
                 name: 'usr_' + id,
                 age: id
-            }
-
-            testDB.save(data)
-                .then((obj) => {
-
-                },
-                (err) => {
-                    console.log(err);
-                });
+            });
         }
 
         let cnt = 0;
@@ -103,8 +118,6 @@ class App extends React.Component {
         for (let i = 0; i < length; i++) {
             await objs[i].destroy();
         }
-
-        console.log("Total " + length + " objects deleted!");
     }
 
     async modify() {
@@ -120,8 +133,6 @@ class App extends React.Component {
             obj.set("name", "M_" + new Date().getTime());
             await obj.save();
         }
-
-        console.log("Total " + length + " objects modified");
     }
 
     async queryAll() {
@@ -151,11 +162,19 @@ class App extends React.Component {
     }
 
     render() {
+        let btnLiveQuery;
+
+        if (this.state.liveQuery) {
+            btnLiveQuery = <Button variant="contained" onClick={this.closeLiveQuery}>关闭监听</Button>;
+        } else {
+            btnLiveQuery = <Button variant="contained" onClick={this.openLiveQuery}>打开监听</Button>
+        }
+
         return (
             <div className="App">
                 <header className="App-Container">
                     <Stack spacing={2} direction="row">
-                        <Button variant="contained" onClick={this.liveQuery}>打开监听</Button>
+                        {btnLiveQuery}
                         <Button variant="contained" onClick={this.queryAll}>获取全部数据</Button>
                         <Button variant="contained" onClick={this.queryUsers}>获取查询数据</Button>
                         <Button variant="contained" onClick={this.modify}>修改数据</Button>
