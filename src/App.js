@@ -118,6 +118,8 @@ class App extends React.Component {
         for (let i = 0; i < length; i++) {
             await objs[i].destroy();
         }
+
+        console.log("Total " + length + " objects deleted");
     }
 
     async modify() {
@@ -133,6 +135,8 @@ class App extends React.Component {
             obj.set("name", "M_" + new Date().getTime());
             await obj.save();
         }
+
+        console.log("Total " + length + " objects modified");
     }
 
     async queryAll() {
