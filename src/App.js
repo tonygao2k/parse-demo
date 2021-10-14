@@ -95,7 +95,15 @@ class App extends React.Component {
             testDB.save({
                 uid: id,
                 name: 'usr_' + id,
-                age: id
+                age: id,
+                activity:{
+                    timestamp: new Date().getTime(),
+                    location: {
+                        w: 120,
+                        h: 130,
+                        top: 9
+                    }
+                }
             });
         }
 
